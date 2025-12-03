@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNSXX - Entorno Virtual de Aprendizaje: Informática Forense</title>
+    <!-- Tailwind CSS para diseño moderno y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconos para una interfaz profesional -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- AQUÍ AGREGAS TU LOGO EN .PNG PARA LA PESTAÑA DEL NAVEGADOR (FAVICON) -->
+    <link rel="icon" type="image/png" href="infor.png">
+
+    <!-- Fuentes académicas -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilos Personalizados */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6;
+        }
+        h1, h2, h3, .nav-item {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .unsxx-red { color: #D32F2F; }
+        .unsxx-blue { color: #1565C0; }
+        .bg-unsxx-blue { background-color: #1565C0; }
+        .bg-unsxx-dark { background-color: #0D47A1; }
+        
+        /* Animaciones para transiciones suaves */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilo para las diapositivas */
+        .slide-container {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        /* Estilo para iframe de presentación */
+        .presentation-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Navegación activa */
+        .nav-btn.active {
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Simulador */
+        .terminal-window {
+            background-color: #1e1e1e;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        /* Tablas personalizadas */
+        .forensic-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+        }
+        .forensic-table th {
+            background-color: #1e293b;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        .forensic-table td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            color: #475569;
+        }
+        .forensic-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- BARRA LATERAL DE NAVEGACIÓN -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-20 hidden md:flex">
+        <div class="p-6 border-b border-slate-700 text-center">
+            
+            <!-- CAMBIO: Tu foto de logo -->
+            <img src="infor.png" alt="Logo UNSXX" class="w-20 h-20 mx-auto mb-3 rounded-full border-4 border-blue-600 object-cover bg-white">
+            
+            <h1 class="text-white font-bold text-lg tracking-wider">UNSXX</h1>
+            <p class="text-xs text-slate-400">Ingeniería Informática</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+            <button onclick="showSection('home')" id="btn-home" class="nav-btn active w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <i class="fas fa-home w-5"></i> Inicio
+            </button>
+            <button onclick="showSection('theory')" id="btn-theory" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <i class="fas fa-book w-5"></i> Teoría Forense
+            </button>
+            <button onclick="showSection('slides')" id="btn-slides" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <i class="fas fa-desktop w-5"></i> Diapositivas
+            </button>
+            <button onclick="showSection('video')" id="btn-video" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <i class="fas fa-video w-5"></i> Video Clase
+            </button>
+            <button onclick="showSection('games')" id="btn-games" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <i class="fas fa-gamepad w-5"></i> Juegos & Trivia
+            </button>
+            <button onclick="showSection('library')" id="btn-library" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <i class="fas fa-book-reader w-5"></i> Biblioteca
+            </button>
+            <button onclick="showSection('simulation')" id="btn-simulation" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <i class="fas fa-microchip w-5"></i> Lab. Virtual
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-700 text-xs text-center text-slate-500">
+            &copy; 2024 UNSXX - Informática
+        </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Header Móvil -->
+        <header class="bg-unsxx-blue text-white p-4 md:hidden flex justify-between items-center shadow-md">
+            <span class="font-bold">UNSXX Forense</span>
+            <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('h-full');" class="text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </header>
+
+        <!-- Área de Contenido con Scroll -->
+        <div id="content-area" class="flex-1 overflow-y-auto p-6 md:p-10 bg-gray-50">
+            
+            <!-- 1. SECCIÓN INICIO -->
+            <section id="home" class="fade-in block">
+                <div class="max-w-4xl mx-auto text-center space-y-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-blue-600">
+                        <div class="mb-6 flex justify-center">
+                            <i class="fas fa-graduation-cap text-6xl text-blue-700"></i>
+                        </div>
+                        <h2 class="text-4xl font-extrabold text-slate-800 mb-2">Universidad Nacional Siglo XX</h2>
+                        <h3 class="text-2xl text-slate-600 font-semibold mb-6">Carrera de Ingeniería Informática</h3>
+                        <p class="text-gray-600 leading-relaxed text-lg mb-8">
+                            Bienvenido al Entorno Virtual de Aprendizaje (EVA). Esta plataforma está dedicada a la formación especializada en 
+                            <strong>Informática Forense</strong>, una disciplina crítica en la seguridad digital moderna.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                            <div class="p-4 bg-blue-50 rounded-lg">
+                                <i class="fas fa-shield-alt text-3xl text-blue-600 mb-3"></i>
+                                <h4 class="font-bold">Seguridad</h4>
+                                <p class="text-sm text-gray-500">Protección de activos digitales.</p>
+                            </div>
+                            <div class="p-4 bg-red-50 rounded-lg">
+                                <i class="fas fa-search text-3xl text-red-600 mb-3"></i>
+                                <h4 class="font-bold">Investigación</h4>
+                                <p class="text-sm text-gray-500">Análisis de evidencia digital.</p>
+                            </div>
+                            <div class="p-4 bg-green-50 rounded-lg">
+                                <i class="fas fa-gavel text-3xl text-green-600 mb-3"></i>
+                                <h4 class="font-bold">Legalidad</h4>
+                                <p class="text-sm text-gray-500">Normativa y cadena de custodia.</p>
+                            </div>
+                        </div>
+                        <button onclick="showSection('theory')" class="mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-1">
+                            Comenzar Curso <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. SECCIÓN TEORÍA (CONTENIDO NUEVO INTEGRADO) -->
+            <section id="theory" class="fade-in hidden">
+                <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden min-h-screen">
+                    <div class="bg-slate-800 text-white p-8">
+                        <h2 class="text-3xl font-bold"><i class="fas fa-book mr-3"></i>Módulo 1: Fundamentos de Informática Forense</h2>
+                    </div>
+                    <div class="p-8 md:p-12 space-y-12 text-gray-700">
+                        
+                        <!-- 1. INTRODUCCIÓN -->
+                        <article>
+                            <h3 class="text-2xl font-bold text-blue-800 mb-4 border-b pb-2">1. ¿Qué es la Informática Forense?</h3>
+                            <p class="mb-4 leading-relaxed">
+                                La informática forense (o cómputo forense) es una disciplina fascinante que combina la ciencia computacional con leyes y procedimientos legales. Su objetivo no es solo "encontrar datos", sino hacerlo de una manera que sea admisible ante un tribunal.
+                                Es la aplicación de técnicas científicas y analíticas especializadas a infraestructura tecnológica para identificar, preservar, analizar y presentar datos que sean válidos dentro de un proceso legal.
+                            </p>
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-6">
+                                <h4 class="font-bold text-blue-900 mb-2">Objetivos Principales:</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Recuperar evidencias perdidas, borradas o dañadas.</li>
+                                    <li>Rastrear la fuente de un ataque cibernético.</li>
+                                    <li>Prevenir futuros crímenes mediante el análisis de vulnerabilidades explotadas.</li>
+                                </ul>
+                            </div>
+                        </article>
+
+                        <!-- 2. CICLO DE VIDA -->
+                        <article>
+                            <h3 class="text-2xl font-bold text-blue-800 mb-4 border-b pb-2">2. El Ciclo de Vida de una Investigación Forense</h3>
+                            <p class="mb-4">Este es el procedimiento estándar que debe seguirse rigurosamente para no invalidar la prueba.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-gray-50 p-5 rounded border border-gray-200">
+                                    <h4 class="font-bold text-slate-800"><i class="fas fa-search mr-2 text-blue-600"></i>A. Identificación</h4>
+                                    <p class="text-sm mt-2">Determinar qué activos (laptops, servidores, móviles, nubes) contienen información relevante para el caso.</p>
+                                </div>
+                                <div class="bg-gray-50 p-5 rounded border border-gray-200">
+                                    <h4 class="font-bold text-slate-800"><i class="fas fa-shield-alt mr-2 text-blue-600"></i>B. Preservación (Crítico)</h4>
+                                    <p class="text-sm mt-2">Aislar y proteger la evidencia. <strong>Regla de Oro:</strong> Nunca trabajar sobre la evidencia original. Uso de bloqueadores de escritura.</p>
+                                </div>
+                                <div class="bg-gray-50 p-5 rounded border border-gray-200">
+                                    <h4 class="font-bold text-slate-800"><i class="fas fa-hdd mr-2 text-blue-600"></i>C. Adquisición</h4>
+                                    <p class="text-sm mt-2">Creación de una imagen forense bit a bit (copia exacta, incluyendo espacio "vacío" o borrado).</p>
+                                </div>
+                                <div class="bg-gray-50 p-5 rounded border border-gray-200">
+                                    <h4 class="font-bold text-slate-800"><i class="fas fa-microscope mr-2 text-blue-600"></i>D. Análisis</h4>
+                                    <p class="text-sm mt-2">El investigador trabaja sobre la copia usando herramientas para buscar palabras clave, recuperar archivos, etc.</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded">
+                                <h4 class="font-bold text-green-800">E. Presentación / Reporte</h4>
+                                <p class="text-sm">Crear un informe técnico comprensible para abogados y jueces explicando qué se encontró.</p>
+                            </div>
+                        </article>
+
+                        <!-- 3. CONCEPTOS CLAVE -->
+                        <article>
+                            <h3 class="text-2xl font-bold text-blue-800 mb-4 border-b pb-2">3. Conceptos Clave</h3>
+                            <ul class="space-y-4 mb-6">
+                                <li><strong>Cadena de Custodia:</strong> Documento legal que registra cronológicamente quién tuvo contacto con la evidencia.</li>
+                                <li><strong>Hashing (Huella Digital):</strong> Algoritmos (MD5, SHA-256) que generan un código único. Si cambia un bit, cambia el hash.</li>
+                                <li><strong>Principio de Locard:</strong> "Todo contacto deja un rastro".</li>
+                            </ul>
+
+                            <h4 class="font-bold text-lg mb-2">Tabla de Volatilidad de los Datos</h4>
+                            <div class="overflow-x-auto">
+                                <table class="forensic-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Orden</th>
+                                            <th>Tipo de Datos</th>
+                                            <th>Ejemplo</th>
+                                            <th>Detalle</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="font-bold">1. Muy Volátil</td>
+                                            <td>Registros CPU, Caché</td>
+                                            <td>Desaparecen en nanosegundos</td>
+                                            <td>Prioridad máxima</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">2. Volátil</td>
+                                            <td>Memoria RAM</td>
+                                            <td>Tablas de ruteo</td>
+                                            <td>Desaparecen al apagar</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">3. Menos Volátil</td>
+                                            <td>Disco Duro (HDD/SSD)</td>
+                                            <td>Archivos</td>
+                                            <td>Persisten tras apagar</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">4. No Volátil</td>
+                                            <td>Logs remotos/Cintas</td>
+                                            <td>Backups</td>
+                                            <td>Almacenamiento a largo plazo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+
+                        <!-- 4. ÁREAS Y HERRAMIENTAS -->
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <article>
+                                <h3 class="text-xl font-bold text-blue-800 mb-4 border-b pb-2">4. Áreas de Especialización</h3>
+                                <ul class="list-disc list-inside space-y-2 text-sm">
+                                    <li><strong>Forense de Discos:</strong> Extracción de HDDs, SSDs, USBs.</li>
+                                    <li><strong>Forense de Redes:</strong> Monitoreo de tráfico LAN/WAN.</li>
+                                    <li><strong>Forense Móvil:</strong> Smartphones (WhatsApp, GPS).</li>
+                                    <li><strong>Forense en la Nube:</strong> AWS, Azure, Google Drive.</li>
+                                    <li><strong>Análisis de Malware:</strong> Ingeniería inversa de virus.</li>
+                                </ul>
+                            </article>
+                            <article>
+                                <h3 class="text-xl font-bold text-blue-800 mb-4 border-b pb-2">5. Herramientas del Oficio</h3>
+                                <div class="mb-3">
+                                    <h5 class="font-bold text-sm text-purple-700">Comercial (Estándar)</h5>
+                                    <ul class="list-disc list-inside text-sm pl-2">
+                                        <li>EnCase (Judicial)</li>
+                                        <li>FTK (Forensic Toolkit)</li>
+                                        <li>Cellebrite (Móviles)</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-sm text-green-700">Open Source (Gratuito)</h5>
+                                    <ul class="list-disc list-inside text-sm pl-2">
+                                        <li>Autopsy (Interfaz gráfica)</li>
+                                        <li>Volatility (RAM)</li>
+                                        <li>Wireshark (Redes)</li>
+                                        <li>Kali Linux (Modo Forense)</li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </div>
+
+                        <!-- 6. RETOS Y CARRERA -->
+                        <article>
+                            <h3 class="text-2xl font-bold text-blue-800 mb-4 border-b pb-2">6. Retos y Carrera Profesional</h3>
+                            <div class="bg-yellow-50 p-4 border-l-4 border-yellow-500 mb-4">
+                                <h4 class="font-bold text-yellow-800">Retos Actuales</h4>
+                                <p class="text-sm mt-1"><strong>Cifrado (Encryption):</strong> BitLocker, VeraCrypt.<br>
+                                <strong>Anti-Forense:</strong> Borrado seguro, esteganografía.<br>
+                                <strong>SSD y TRIM:</strong> El borrado físico rápido en discos modernos.</p>
+                            </div>
+                            <p><strong>¿Cómo empezar?</strong> Aprende Sistemas Operativos a bajo nivel (Kernel, NTFS). Busca certificaciones como CHFI, GCFA o ACE. Practica con retos CTF forenses usando Autopsy.</p>
+                        </article>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. SECCIÓN DIAPOSITIVAS (EXTERNAS) -->
+            <section id="slides" class="fade-in hidden h-full flex flex-col items-center justify-center p-4">
+                <div class="w-full max-w-6xl h-full flex flex-col">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-4 text-center">Presentación del Curso</h2>
+                    
+                    <div class="flex-1 bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-300 relative">
+                        <!-- INSTRUCCIONES PARA EL USUARIO -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0 opacity-10">
+                            <i class="fas fa-file-powerpoint text-9xl text-gray-500"></i>
+                        </div>
+                        
+                        <!-- IFRAME PARA PPT EXTERNO -->
+                        <!-- 
+                             PARA USAR TU PPT:
+                             1. Sube tu PPT a Google Drive o OneDrive.
+                             2. Obtén el código "Insertar" o "Embed".
+                             3. Copia la URL que aparece en 'src="..."' y pégala abajo.
+                             Ejemplo Google Slides: https://docs.google.com/presentation/d/e/PACX-1vQ.../embed?start=false&loop=false
+                        -->
+                        <iframe 
+                            src="https://docs.google.com/presentation/d/1eZ65Zjukb4pJYsA5tI6imuPJ0u7e2CAiZcoI9sj1uic/edit?usp=sharing" 
+                            frameborder="0" 
+                            width="100%" 
+                            height="100%" 
+                            allowfullscreen="true" 
+                            mozallowfullscreen="true" 
+                            webkitallowfullscreen="true"
+                            class="presentation-frame z-10 relative bg-white">
+                        </iframe>
+                        
+                       
+                </div>
+            </section>
+
+            <!-- 4. SECCIÓN VIDEO (REAL) -->
+            <section id="video" class="fade-in hidden">
+                <div class="max-w-5xl mx-auto text-center h-full flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6">Clase Virtual: Análisis de Evidencia con IA</h2>
+                    
+                    <div class="bg-black rounded-xl overflow-hidden shadow-2xl w-full aspect-video relative group">
+                        
+                        <!-- OPCIÓN 1: VIDEO LOCAL (MP4) -->
+                        <!-- Cambia 'src' por el nombre de tu archivo de video generado por IA -->
+                       <video controls class="w-full h-full object-contain bg-black">
+                            <source src="_Qu_es_la_Inform_tica_Forense_y_cu_l_es_el_rol_de_un_Perito_Inf.mp4" type="video/mp4">
+                            Tu navegador no soporta el tag de video.
+                        </video>
+
+                        <!-- OPCIÓN 2: YOUTUBE / VIMEO (Descomentar para usar) -->
+                        <!--
+                        <iframe 
+                            class="w-full h-full"
+                            src="https://www.youtube.com/embed/TU_ID_DE_VIDEO" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        -->
+                    </div>
+
+                    <div class="mt-8 text-left bg-white p-6 rounded-lg shadow flex items-start gap-4">
+                        <div class="bg-blue-100 p-3 rounded-full text-blue-600">
+                            <i class="fas fa-robot text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-1">Sobre este material</h4>
+                            <p class="text-gray-600 text-sm">Este contenido audiovisual ha sido sintetizado utilizando herramientas de Inteligencia Artificial para explicar los procedimientos de adquisición de memoria RAM y preservación de evidencia volátil.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. SECCIÓN JUEGOS -->
+            <section id="games" class="fade-in hidden">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-8 text-center"><i class="fas fa-brain text-purple-600 mr-3"></i>Entrenamiento Forense</h2>
+                    
+                    <!-- Tarjeta del Juego -->
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+                        <div class="bg-purple-600 p-4 text-white flex justify-between items-center">
+                            <h3 class="font-bold text-xl">Trivia: Desafío de Conocimiento</h3>
+                            <span class="bg-purple-800 px-3 py-1 rounded text-sm">Nivel: Ingeniería</span>
+                        </div>
+                        
+                        <div class="p-8">
+                            <div id="quiz-container">
+                                <div class="mb-6">
+                                    <h4 class="text-xl font-semibold text-gray-800 mb-4" id="question-text">Cargando pregunta...</h4>
+                                    <div class="space-y-3" id="options-container">
+                                        <!-- Opciones generadas por JS -->
+                                    </div>
+                                </div>
+                                <div id="feedback" class="hidden p-4 rounded-lg mb-4 text-center font-bold"></div>
+                                <div class="flex justify-between items-center border-t pt-4">
+                                    <span class="text-gray-500">Puntaje: <span id="score" class="font-bold text-purple-600">0</span></span>
+                                    <button onclick="nextQuestion()" class="bg-slate-800 text-white px-6 py-2 rounded hover:bg-slate-700 transition">Siguiente</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Mensaje final oculto -->
+                            <div id="quiz-end" class="hidden text-center py-8">
+                                <i class="fas fa-trophy text-6xl text-yellow-400 mb-4"></i>
+                                <h3 class="text-2xl font-bold mb-2">¡Entrenamiento Completado!</h3>
+                                <p class="text-gray-600 mb-6">Tu puntuación final es: <span id="final-score"></span></p>
+                                <button onclick="restartQuiz()" class="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700">Jugar de nuevo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. SECCIÓN BIBLIOTECA -->
+            <section id="library" class="fade-in hidden">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-8"><i class="fas fa-book-open text-green-600 mr-3"></i>Biblioteca Digital Gratuita</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        
+                        <!-- Libro 1 -->
+                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500 hover:shadow-xl transition flex gap-4">
+                            <div class="bg-green-100 w-16 h-20 flex items-center justify-center rounded text-green-600 text-2xl flex-shrink-0">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">LA INFORMÁTICA FORENSE
+DESDE UN ENFOQUE PRÁCTICO</h3>
+                                <p class="text-sm text-gray-500 mb-3">Autor: Martha Irene Romero Castro
+ Miguel Angel Choez Chele
+Cristhian José Álava Mero
+ Vicente Fray Romero Castro
+ Miriam Adriana Castillo Merino
+ Leonardo Raúl Murillo Quimíz
+ Holger Benny Delgado Lu</p>
+                                <a href="LA-INFORMÁTICA-FORENSE-DESDE-UN-ENFOQUE-PRÁCTICO.pdf" class="text-blue-600 hover:underline text-sm font-semibold">Descargar / Leer Online</a>
+                            </div>
+                        </div>
+
+                        <!-- Libro 2 -->
+                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500 hover:shadow-xl transition flex gap-4">
+                            <div class="bg-green-100 w-16 h-20 flex items-center justify-center rounded text-green-600 text-2xl flex-shrink-0">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">PERITAJE INFORMÁTICO PARAABOGADOS</h3>
+                                <p class="text-sm text-gray-500 mb-3">Autor: JOCSAN
+LAGUNA</p>
+                                <a href="https://gc.scalahed.com/recursos/files/r161r/w26078w/Recursos/M1SI111_Castro_S1.pdf" class="text-blue-600 hover:underline text-sm font-semibold">Descargar / Leer Online</a>
+                            </div>
+                        </div>
+
+                        <!-- Libro 3 -->
+                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500 hover:shadow-xl transition flex gap-4">
+                            <div class="bg-green-100 w-16 h-20 flex items-center justify-center rounded text-green-600 text-2xl flex-shrink-0">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">FUNDAMENTOS DE LA INFORMÁTICA FORENSE </h3>
+                                <p class="text-sm text-gray-500 mb-3">Autor:  JOCSAN
+LAGUNA</p>
+                                <a href="https://jocsanlaguna.com/wp-content/uploads/2025/08/FundamentosIF.pdf" class="text-blue-600 hover:underline text-sm font-semibold">Descargar / Leer Online</a>
+                            </div>
+                        </div>
+
+                         <!-- Libro 4 -->
+                         <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500 hover:shadow-xl transition flex gap-4">
+                            <div class="bg-green-100 w-16 h-20 flex items-center justify-center rounded text-green-600 text-2xl flex-shrink-0">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">Informática
+Forense</h3>
+                                <p class="text-sm text-gray-500 mb-3">Autor: Iván M. Hidalgo Cajo
+Saul Yasaca Pucuna
+Luis Á. Lema Ayala
+Byron G. Hidalgo Cajo</p>
+                                <a href="http://cimogsys.espoch.edu.ec/direccion-publicaciones/public/docs/books/2019-09-19-133251-70%20Libro%20Informatica%20Forense.pdf" class="text-blue-600 hover:underline text-sm font-semibold">Descargar / Leer Online</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. SECCIÓN SIMULADOR (EXTRA) -->
+            <section id="simulation" class="fade-in hidden">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-6 text-center">Laboratorio: Simulador de Casos</h2>
+                    <p class="text-center text-gray-600 mb-8">Toma decisiones críticas en un escenario realista. Cada elección afecta la admisibilidad de la evidencia.</p>
+                    
+                    <div class="terminal-window rounded-lg shadow-2xl overflow-hidden border border-gray-700">
+                        <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="ml-2 text-xs text-gray-400">root@forensic-lab:~# case_001.exe</span>
+                        </div>
+                        <div class="p-6 min-h-[400px] flex flex-col justify-between">
+                            <div id="sim-text" class="text-lg leading-relaxed mb-6 font-mono">
+                                Iniciando sistema...<br>
+                                CASO #492: Allanamiento oficina corporativa.<br>
+                                SITUACIÓN: Encuentras una laptop encendida. En pantalla se ve un chat cifrado abierto.<br>
+                                ¿Cuál es tu procedimiento inmediato?
+                            </div>
+                            <div id="sim-options" class="grid gap-3">
+                                <!-- Opciones generadas por JS -->
+                            </div>
+                            <button onclick="resetSimulation()" class="mt-6 text-xs text-gray-500 hover:text-white text-right w-full">Reiniciar Simulación</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- SCRIPTS DE FUNCIONALIDAD -->
+    <script>
+        // --- 1. LÓGICA DE NAVEGACIÓN ---
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('section').forEach(sec => {
+                sec.classList.add('hidden');
+            });
+            // Mostrar la seleccionada
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Actualizar botones del menú
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn-' + sectionId).classList.add('active');
+        }
+
+        // --- 3. LÓGICA DEL JUEGO (TRIVIA) ---
+        const questions = [
+            {
+                q: "¿Qué es un HASH en informática forense?",
+                a: ["Un virus troyano", "Una firma digital única de un archivo", "Un tipo de disco duro"],
+                correct: 1
+            },
+            {
+                q: "¿Qué se debe hacer primero con un equipo encendido?",
+                a: ["Apagarlo de golpe", "Reiniciar para ver contraseña", "Capturar la RAM (Live Acquisition)"],
+                correct: 2
+            },
+            {
+                q: "¿Cuál NO es una herramienta forense?",
+                a: ["Adobe Photoshop", "Autopsy", "FTK Imager"],
+                correct: 0
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            if(currentQ >= questions.length) {
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('quiz-end').classList.remove('hidden');
+                document.getElementById('final-score').innerText = score + "/" + questions.length;
+                return;
+            }
+            
+            const q = questions[currentQ];
+            document.getElementById('question-text').innerText = q.q;
+            const optsDiv = document.getElementById('options-container');
+            optsDiv.innerHTML = '';
+            document.getElementById('feedback').classList.add('hidden');
+            
+            q.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 rounded border border-gray-300 hover:bg-purple-50 transition";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, q.correct);
+                optsDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById('feedback');
+            feedback.classList.remove('hidden');
+            if(selected === correct) {
+                feedback.className = "p-4 rounded-lg mb-4 text-center font-bold bg-green-100 text-green-700";
+                feedback.innerText = "¡Correcto! +1 punto";
+                score++;
+            } else {
+                feedback.className = "p-4 rounded-lg mb-4 text-center font-bold bg-red-100 text-red-700";
+                feedback.innerText = "Incorrecto. La respuesta correcta era la opción " + (correct + 1);
+            }
+            document.getElementById('score').innerText = score;
+            // Deshabilitar botones
+            const btns = document.getElementById('options-container').querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            loadQuestion();
+        }
+
+        function restartQuiz() {
+            currentQ = 0;
+            score = 0;
+            document.getElementById('score').innerText = "0";
+            document.getElementById('quiz-end').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        loadQuestion(); // Iniciar quiz
+
+        // --- 4. LÓGICA DEL SIMULADOR ---
+        const scenario = {
+            start: {
+                text: "Estás frente a la laptop del sospechoso. Está encendida. ¿Qué haces?",
+                opts: [
+                    { t: "Apagarla inmediatamente para llevarla", next: "fail1" },
+                    { t: "Tomar fotos y adquirir la RAM", next: "step2" }
+                ]
+            },
+            fail1: {
+                text: "ERROR FATAL: Al apagarla, perdiste la RAM y el disco estaba cifrado con BitLocker. Ya no puedes acceder a la evidencia.",
+                opts: []
+            },
+            step2: {
+                text: "¡Bien! RAM asegurada. Ahora vas a copiar el disco duro. ¿Cómo lo conectas a tu equipo?",
+                opts: [
+                    { t: "Directamente al puerto SATA/USB", next: "fail2" },
+                    { t: "Usando un bloqueador de escritura (Write Blocker)", next: "win" }
+                ]
+            },
+            fail2: {
+                text: "ERROR: Tu sistema operativo modificó la fecha de último acceso de los archivos al conectarlo. La defensa invalidó tu prueba.",
+                opts: []
+            },
+            win: {
+                text: "¡EXCELENTE! Has preservado la cadena de custodia y la integridad de los datos. Caso resuelto con éxito.",
+                opts: []
+            }
+        };
+
+        function updateSim(stepKey) {
+            const step = scenario[stepKey];
+            const textDiv = document.getElementById('sim-text');
+            const optsDiv = document.getElementById('sim-options');
+            
+            textDiv.innerHTML = step.text;
+            optsDiv.innerHTML = '';
+            
+            if(step.opts.length === 0) {
+                if(stepKey.includes('fail')) textDiv.style.color = '#ff4444';
+                if(stepKey === 'win') textDiv.style.color = '#00ff00';
+            } else {
+                textDiv.style.color = '#00ff00';
+                step.opts.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left p-3 border border-green-500 text-green-400 hover:bg-green-900/30 font-mono text-sm transition";
+                    btn.innerText = "> " + opt.t;
+                    btn.onclick = () => updateSim(opt.next);
+                    optsDiv.appendChild(btn);
+                });
+            }
+        }
+        
+        function resetSimulation() {
+            updateSim('start');
+        }
+
+        // Iniciar simulador
+        resetSimulation();
+
+    </script>
+</body>
+</html>
